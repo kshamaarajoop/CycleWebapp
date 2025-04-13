@@ -1,3 +1,4 @@
+import './App.css';
 import React from 'react';
 import{auth,googleProvider} from "./firebase";
 import { signInWithPopup } from 'firebase/auth';
