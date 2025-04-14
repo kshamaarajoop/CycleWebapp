@@ -1,4 +1,4 @@
-
+import Tracker from './pages/Tracker'; 
 import './App.css';
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -14,6 +14,7 @@ function App() {
         <Route path="/" element={<SignUp />} />
         <Route path="/home" element={<Home />} />
         <Route path="/onboarding" element={<Onboarding />} />
+        <Route path="/tracker" element={<Tracker />} /> 
       </Routes>
     </Router>
   );
