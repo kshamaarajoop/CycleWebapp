@@ -28,8 +28,6 @@ const Onboarding = () => {
 alert("Thanks! Your info has been saved.");
 navigate("/home");
 
-
-    navigate("/home");
   };
 
   return (
