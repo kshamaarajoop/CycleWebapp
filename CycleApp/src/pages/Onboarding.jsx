@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const Onboarding = () => {
   const navigate = useNavigate();
   
-  // State to track form data
+
   const [formData, setFormData] = useState({
     periodStartDate: '',
     cycleLength: '',
@@ -22,10 +22,13 @@ const Onboarding = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Process form data here, maybe send it to a backend
+
     console.log('Form submitted with data:', formData);
 
-    // Navigate to another page (e.g., home or dashboard)
+alert("Thanks! Your info has been saved.");
+navigate("/home");
+
+
     navigate("/home");
   };
 
