@@ -1,7 +1,26 @@
 import './App.css';
 import React from 'react';
+
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import SignUp from './pages/SignUp';
+import Home from './pages/Home';
+import Onboarding from './pages/Onboarding';
+
 import{auth,googleProvider} from "./firebase";
 import { signInWithPopup } from 'firebase/auth';
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<SignUp />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/onboarding" element={<Onboarding />} />
+      </Routes>
+    </Router>
+  );
+}
+
 const App=()=>{
   const handleGoogleSignIn=async()=>{
     try{
@@ -39,7 +58,4 @@ const App=()=>{
     </div>
   );
 };
-
-
-
 export default App;
