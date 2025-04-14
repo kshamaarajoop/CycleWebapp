@@ -2,9 +2,11 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, googleProvider } from "../firebase";
 import { signInWithPopup } from 'firebase/auth';
-import './SignUp.css'; // Optional styling
+import './SignUp.css'; 
 
 const SignUp = () => {
+ 
+
   const navigate = useNavigate();
 
   const handleGoogleSignIn = async () => {
