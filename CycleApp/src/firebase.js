@@ -2,13 +2,13 @@ import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDxbBQYP19e-tHCOTp8sqKVJiXyasTA-HU",
-  authDomain: "cycleweb-95039.firebaseapp.com",
-  projectId: "cycleweb-95039",
-  storageBucket: "cycleweb-95039.firebasestorage.app",
-  messagingSenderId: "194076594891",
-  appId: "1:194076594891:web:0b822ba0c5a81fafff014e",
-   measurementId: "G-EH692PM082"
+  apiKey: "API_KEY",
+  authDomain: "AUTH_DOMAIN",
+  projectId: "PROJECT_ID",
+  storageBucket: "STORAGE_BUCKET",
+  messagingSenderId: "SENDER_ID",
+  appId: "APP_ID",
+   measurementId: "MEASUREMENT_ID"
 };
 
 const app = initializeApp(firebaseConfig);
