@@ -20,11 +20,11 @@ app.use(express.static(__dirname));
 app.use("/src", express.static(path.join(__dirname, "src")));
 
 const db = new pg.Client({
-  user: process.env.PG_USER,
-  password: process.env.PG_PASSWORD,
-  host: process.env.PG_HOST,
-  port: process.env.PG_PORT,
-  database: process.env.PG_DATABASE,
+  user: "postgres",
+  password: "sqlishu",
+  host: "localhost",
+  port: 5432,
+  database: "CycleApp",
 });
 db.connect();
 app.get("/", (req, res) => {
