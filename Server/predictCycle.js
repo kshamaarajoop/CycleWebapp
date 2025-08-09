@@ -1,6 +1,13 @@
-import { calcualteNextPeriod, getCyclePhases } from "./cycleUtils";
-
-/* User Cycle info Table required!!!! */
+import { calcualteNextPeriod, getCyclePhases } from "./cycleUtils.js";
+//for predictions
+/* User Cycle info Table required!!!! 
+CREATE TABLE users_cycle_deets (
+  uid VARCHAR(100) PRIMARY KEY REFERENCES users(uid),
+  cycle_length INT,
+  period_duration INT,
+  last_period_start DATE
+);
+*/
 app.get('/api/predictCycle',verifyToken,async(req,res)=>{
   const { uid } = req.user;
   console.log("🔥 Predict Cycle Request Received:");
