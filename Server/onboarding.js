@@ -1,34 +1,94 @@
-import express from "express";
-import admin from "./firebase.js";
-import bodyParser from "body-parser";
-import path from "path";
-import { fileURLToPath } from "url";
-import pg from "pg";
-import verifyToken from "./userSignUp.js";
-import dotenv from "dotenv";
-dotenv.config();
-const app=express();
+// CREATE TABLE user_onboarding (
+//   id SERIAL PRIMARY KEY,
+//   user_id VARCHAR(255) NOT NULL,
+//   age INTEGER NOT NULL,
+//   weight DECIMAL(5,2) NOT NULL,
+//   height INTEGER NOT NULL,
+//   period_start_date DATE NOT NULL,
+//   cycle_length INTEGER NOT NULL,
+//   symptoms_tracking BOOLEAN NOT NULL DEFAULT false,
+//   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+//   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+//   CONSTRAINT fk_user
+//     FOREIGN KEY(user_id) 
+//     REFERENCES users(uid) 
+// );
 
-const db = new pg.Client({
-  user: process.env.PG_USER,
-  password: process.env.PG_PASSWORD,
-  host: process.env.PG_HOST,
-  port: process.env.PG_PORT,
-  database: process.env.PG_DATABASE,
-});
-db.connect();
+import 'dotenv/config';
+import express from 'express';
+import pkg from 'pg';
+const { Pool } = pkg;
 
-app.post("/api/onboarding",verifyToken,async(req,res)=>{
-  const {uid}=req.user;
-  const {age,weight,height,cycleLength,periodDuration,sexualActivity,sympotms /*symptoms befire and after your period */}=req.body;
-  try{
-    await db.query("Insert into user_details(uid,age,weight,height,cycle_length,period_duration,symptoms) values ($1,$2,$3,$4,$5,$6,$7) on conflict (uid) do update set age=$2,weight=$3,height=$4,cycle_length=$5,period_duration=$6,symptoms=$7",[age,weight,height,cycleLength,periodDuration,sexualActivity,sympotms]);
-    /* on conflict allows updates if the user has already fille the form once */
-    res.send({success:true,action:
-      "onboarding_complete"
-    });
-  }catch(err){
-    console.log("❌ Error storing onboarding data:", err.message)
-    res.status(500).send("Internal Server Error");
+import admin from 'firebase-admin';
+
+const router = express.Router();
+
+// Temporary CORS fix - move this to your main server file
+router.use((req, res, next) => {
+  // res.header('Access-Control-Allow-Origin', 'http://localhost:5175');
+  // res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  // res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  // res.header('Access-Control-Allow-Credentials', 'true');
+  
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
   }
-})
+});
+
+// PostgreSQL pool configuration
+const pool = new Pool({
+  user: process.env.DB_USER || 'postgres',   
+  host: process.env.DB_HOST || 'localhost',
+  database: process.env.DB_NAME || 'CycleApp',
+  password: process.env.DB_PASSWORD || 'sqlishu',
+  port: process.env.DB_PORT || 5432, 
+});
+
+// Save onboarding data
+router.post('/', async (req, res) => {
+  try {
+    // Verify Firebase token
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    const userId = decodedToken.uid;
+
+    const { age, weight, height, periodStartDate, cycleLength, symptomsTracking } = req.body;
+
+    // Validate input
+    if (!age || !weight || !height || !periodStartDate || !cycleLength) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    // Insert into PostgreSQL
+    const result = await pool.query(
+      `INSERT INTO user_onboarding (
+        user_id, age, weight, height, 
+        period_start_date, cycle_length, symptoms_tracking
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7) 
+       ON CONFLICT (user_id) 
+       DO UPDATE SET
+        age = EXCLUDED.age,
+        weight = EXCLUDED.weight,
+        height = EXCLUDED.height,
+        period_start_date = EXCLUDED.period_start_date,
+        cycle_length = EXCLUDED.cycle_length,
+        symptoms_tracking = EXCLUDED.symptoms_tracking,
+        updated_at = CURRENT_TIMESTAMP
+      RETURNING *`,
+      [userId, age, weight, height, periodStartDate, cycleLength, symptomsTracking || false]
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error('Error saving onboarding data:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+export default router;
