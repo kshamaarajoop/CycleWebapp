@@ -1,24 +1,34 @@
+/* SignUp.css */
 
-
-body {
-  background-color: #fff0f5; /* lavender blush */
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
+.signup-container {
+  height: 100vh;
+  width: 100vw;
+  background-color: #fce4ec;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-button {
-  background-color: #ffb6c1; /* light pink */
+
+.signup-title {
+  font-size: 2.5rem;
+  color: #8244af;
+  margin-bottom: 2rem;
+  font-weight: bold;
+}
+
+.google-btn {
+  background-color: #ff85a2;
   color: white;
-  padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 12px;
+  padding: 0.8rem 2rem;
   font-size: 1rem;
+  border-radius: 2rem;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: background 0.3s ease;
 }
 
-button:hover {
-  background-color: #ff69b4; /* hot pink */
-  transform: scale(1.05);
+.google-btn:hover {
+  background-color: #ff5c8a;
 }
